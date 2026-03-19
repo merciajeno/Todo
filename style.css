@@ -1,0 +1,768 @@
+/* ============================================================
+   THE CASE FILES — style.css
+   Sections:
+   1. Reset & Variables
+   2. Base & Overlays
+   3. Animations
+   4. Billboard / Header
+   5. Slot Meter & Tape
+   6. Main & Banners
+   7. Intake Form
+   8. Filter Tabs
+   9. Section Headers
+   10. Case Cards
+   11. Buttons
+   12. Empty State
+   13. Scrollbar
+   ============================================================ */
+
+
+/* ── 1. Reset & Variables ─────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:        #0d0c0a;
+    --bg3:       #1a1916;
+    --surface:   #1f1d19;
+    --border:    #2e2b24;
+    --border2:   #3d3930;
+    --text:      #d4c9a8;
+    --text2:     #8a8070;
+    --text3:     #5a5448;
+    --gold:      #c9a84c;
+    --gold2:     #8a6e2a;
+    --red:       #c0392b;
+    --red-dim:   #8b2b2b;
+    --green:     #2b5a3a;
+
+    --font-h:    'Special Elite', serif;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'Crimson Pro', Georgia, serif;
+}
+
+
+/* ── 2. Base & Overlays ───────────────────────────────────── */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.45;
+}
+
+/* film grain */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.28;
+}
+
+/* scanlines */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.022) 2px,
+            rgba(0, 0, 0, 0.022) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* real content sits above canvas + overlays */
+.billboard,
+.main {
+    position: relative;
+    z-index: 10;
+}
+
+
+/* ── 3. Animations ────────────────────────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    91%       { opacity: 1; }
+    92%       { opacity: 0.8; }
+    93%       { opacity: 1; }
+    96%       { opacity: 0.88; }
+    97%       { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes shakeX {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-6px); }
+    40%       { transform: translateX(5px); }
+    60%       { transform: translateX(-4px); }
+    80%       { transform: translateX(3px); }
+}
+
+@keyframes lockPulse {
+    0%, 100% { box-shadow: none; }
+    50%       { box-shadow: 0 0 18px 2px rgba(139, 43, 43, 0.35); }
+}
+
+@keyframes unlockFlash {
+    0%   { background: rgba(43, 90, 58, 0.25); }
+    100% { background: transparent; }
+}
+
+
+/* ── 4. Billboard / Header ────────────────────────────────── */
+
+.billboard {
+    border-bottom: 1px solid var(--border);
+    padding: 40px 0 28px;
+    animation: fadeUp 0.5s ease both;
+}
+
+.inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+.dept {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.title-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+h1 {
+    font-family: var(--font-h);
+    font-size: clamp(26px, 5vw, 42px);
+    color: var(--text);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    animation: flicker 9s ease-in-out infinite;
+}
+
+.hdr-date {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+    padding-bottom: 3px;
+}
+
+.hdr-date::before {
+    content: '//  ';
+}
+
+/* stats row */
+.stats {
+    display: flex;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.stat {
+    flex: 1;
+    padding: 12px 14px;
+    border-right: 1px solid var(--border);
+}
+
+.stat:last-child {
+    border-right: none;
+}
+
+.stat-n {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--gold);
+    display: block;
+}
+
+.stat.danger .stat-n {
+    color: var(--red);
+}
+
+.stat-l {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+}
+
+
+/* ── 5. Slot Meter & Tape ─────────────────────────────────── */
+
+.slot-meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.slot-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+}
+
+.slots {
+    display: flex;
+    gap: 5px;
+}
+
+.slot {
+    width: 28px;
+    height: 6px;
+    border: 1px solid var(--border2);
+    background: var(--border);
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.slot.filled {
+    background: var(--gold2);
+    border-color: var(--gold2);
+}
+
+.slot.filled.overdue-slot {
+    background: var(--red-dim);
+    border-color: var(--red);
+    box-shadow: 0 0 6px rgba(192, 57, 43, 0.5);
+}
+
+.slot-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+    margin-left: 4px;
+}
+
+.tape {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.tape-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+.tape-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.tape-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold2), var(--gold));
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.tape-bar::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -2px;
+    width: 1px;
+    height: 7px;
+    background: var(--gold);
+    box-shadow: 0 0 5px var(--gold);
+}
+
+.tape-pct {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+    min-width: 28px;
+    text-align: right;
+}
+
+
+/* ── 6. Main & Banners ────────────────────────────────────── */
+
+.main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+}
+
+.blocked-banner {
+    display: none;
+    background: rgba(139, 43, 43, 0.12);
+    border: 1px solid var(--red-dim);
+    border-left: 3px solid var(--red);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    animation: lockPulse 2.5s ease-in-out infinite, fadeUp 0.3s ease both;
+}
+
+.blocked-banner.show {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.blocked-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    filter: sepia(1) hue-rotate(320deg);
+}
+
+.blocked-text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--red);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+}
+
+.blocked-text strong {
+    color: #e05b4e;
+}
+
+.full-banner {
+    display: none;
+    background: rgba(138, 110, 42, 0.1);
+    border: 1px solid var(--gold2);
+    border-left: 3px solid var(--gold);
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    animation: fadeUp 0.3s ease both;
+}
+
+.full-banner.show {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ── 7. Intake Form ───────────────────────────────────────── */
+
+.intake {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold2);
+    padding: 18px 20px;
+    margin-bottom: 8px;
+    position: relative;
+    animation: fadeUp 0.5s 0.1s ease both;
+    transition: border-color 0.3s, opacity 0.3s;
+}
+
+.intake::before {
+    content: 'NEW INTAKE';
+    position: absolute;
+    top: -9px;
+    left: 14px;
+    background: var(--bg);
+    padding: 0 6px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--gold2);
+    letter-spacing: 0.16em;
+}
+
+.intake.locked {
+    border-top-color: var(--red-dim);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.intake.locked::before {
+    content: 'INTAKE SUSPENDED';
+    color: var(--red-dim);
+}
+
+.intake.shake {
+    animation: shakeX 0.4s ease;
+}
+
+.intake.unlock-flash {
+    animation: unlockFlash 0.6s ease;
+}
+
+.intake-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.f-input,
+.f-select {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.f-input {
+    flex: 1;
+    min-width: 180px;
+    letter-spacing: 0.02em;
+}
+
+.f-input::placeholder {
+    color: var(--text3);
+    font-style: italic;
+}
+
+.f-input:focus,
+.f-select:focus {
+    border-color: var(--gold2);
+}
+
+.f-date {
+    max-width: 148px;
+    color: var(--text2);
+}
+
+.f-btn {
+    background: var(--gold2);
+    color: var(--bg);
+    border: none;
+    font-family: var(--font-h);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+
+.f-btn:hover {
+    background: var(--gold);
+}
+
+.f-btn:disabled {
+    background: var(--text3);
+    cursor: not-allowed;
+}
+
+
+/* ── 8. Filter Tabs ───────────────────────────────────────── */
+
+.filters {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    margin-top: 20px;
+    animation: fadeUp 0.5s 0.15s ease both;
+    overflow-x: auto;
+}
+
+.ftab {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 7px 14px 9px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+    white-space: nowrap;
+}
+
+.ftab:hover {
+    color: var(--text2);
+}
+
+.ftab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+}
+
+
+/* ── 9. Section Headers ───────────────────────────────────── */
+
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 12px;
+}
+
+.sec-head:first-of-type {
+    margin-top: 0;
+}
+
+.sec-title {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.sec-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.sec-ct {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+}
+
+
+/* ── 10. Case Cards ───────────────────────────────────────── */
+
+.case-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border2);
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.15s, border-color 0.15s;
+    animation: slideIn 0.22s ease both;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    background: var(--bg3);
+    border-color: var(--border2);
+}
+
+.card.p-high   { border-left-color: var(--red); }
+.card.p-medium { border-left-color: var(--gold2); }
+.card.p-low    { border-left-color: var(--text3); }
+
+.card.overdue-card {
+    background: rgba(139, 43, 43, 0.07);
+}
+
+.card.closed {
+    opacity: 0.48;
+    border-left-color: var(--green) !important;
+}
+
+.card.closed::after {
+    content: 'CLOSED';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-5deg);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: #3d8f5f;
+    border: 1px solid #2b5a3a;
+    padding: 2px 7px;
+    pointer-events: none;
+}
+
+.c-num {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+    min-width: 52px;
+    padding-top: 3px;
+    flex-shrink: 0;
+}
+
+.c-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.c-text {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.closed .c-text {
+    text-decoration: line-through;
+    color: var(--text3);
+}
+
+.c-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.c-tag {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    border: 1px solid currentColor;
+}
+
+.tag-high   { color: var(--red); }
+.tag-medium { color: var(--gold2); }
+.tag-low    { color: var(--text3); }
+
+.c-due {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text3);
+}
+
+.c-due.ov {
+    color: var(--red);
+    font-weight: bold;
+}
+
+.c-due.ov::before {
+    content: '⚠ ';
+}
+
+.overdue-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    border: 1px solid var(--red-dim);
+    padding: 1px 5px;
+    animation: lockPulse 2s ease-in-out infinite;
+}
+
+
+/* ── 11. Buttons ──────────────────────────────────────────── */
+
+.c-acts {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.btn-check,
+.btn-rm {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.btn-check:hover {
+    border-color: var(--gold2);
+    color: var(--gold);
+}
+
+.closed .btn-check {
+    background: var(--green);
+    border-color: var(--green);
+    color: #5adb8a;
+}
+
+.btn-rm {
+    border-color: transparent;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.card:hover .btn-rm {
+    opacity: 1;
+}
+
+.btn-rm:hover {
+    color: var(--red);
+    border-color: var(--red-dim);
+}
+
+
+/* ── 12. Empty State ──────────────────────────────────────── */
+
+.empty {
+    padding: 28px 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+    border: 1px dashed var(--border);
+    letter-spacing: 0.08em;
+}
+
+
+/* ── 13. Scrollbar ────────────────────────────────────────── */
+
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); }

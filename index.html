@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Case Files</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Background particle canvas -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- ── Header ── -->
+<header class="billboard">
+    <div class="inner">
+
+        <p class="dept">Detective Division &nbsp;·&nbsp; Case Management System &nbsp;·&nbsp; v1.0</p>
+
+        <div class="title-row">
+            <h1>The Case Files</h1>
+            <span class="hdr-date" id="hdr-date"></span>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-n" id="s-total">0</span>
+                <span class="stat-l">Total</span>
+            </div>
+            <div class="stat">
+                <span class="stat-n" id="s-open">0</span>
+                <span class="stat-l">Open</span>
+            </div>
+            <div class="stat danger">
+                <span class="stat-n" id="s-over">0</span>
+                <span class="stat-l">Overdue</span>
+            </div>
+            <div class="stat">
+                <span class="stat-n" id="s-closed">0</span>
+                <span class="stat-l">Closed</span>
+            </div>
+        </div>
+
+        <!-- Case slot meter -->
+        <div class="slot-meter">
+            <span class="slot-label">Case Slots</span>
+            <div class="slots" id="slot-dots"></div>
+            <span class="slot-status" id="slot-status"></span>
+        </div>
+
+        <!-- Clearance rate bar -->
+        <div class="tape">
+            <span class="tape-label">Clearance Rate</span>
+            <div class="tape-track">
+                <div class="tape-bar" id="tape-bar" style="width: 0%"></div>
+            </div>
+            <span class="tape-pct" id="tape-pct">0%</span>
+        </div>
+
+    </div>
+</header>
+
+<!-- ── Main content ── -->
+<main class="main">
+
+    <!-- Overdue lock banner -->
+    <div class="blocked-banner" id="blocked-banner">
+        <span class="blocked-icon">🔒</span>
+        <span class="blocked-text">
+        <strong>Intake suspended.</strong>
+        Resolve all overdue cases to unlock intake.
+      </span>
+    </div>
+
+    <!-- Slots full banner -->
+    <div class="full-banner" id="full-banner">
+      <span class="blocked-text">
+        All 4 case slots occupied. Close a case to open a new one.
+      </span>
+    </div>
+
+    <!-- New case intake form -->
+    <div class="intake" id="intake-form">
+        <div class="intake-row">
+            <input
+                    class="f-input"
+                    id="new-task"
+                    type="text"
+                    placeholder="Describe the case…"
+                    autocomplete="off"
+            />
+            <select class="f-select" id="new-pri">
+                <option value="high">CRITICAL</option>
+                <option value="medium" selected>STANDARD</option>
+                <option value="low">MINOR</option>
+            </select>
+            <input class="f-input f-date" id="new-due" type="date" />
+            <button class="f-btn" id="open-btn" onclick="addCase()">Open Case</button>
+        </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <nav class="filters">
+        <button class="ftab active" onclick="setFilter('all', this)">All Cases</button>
+        <button class="ftab" onclick="setFilter('open', this)">Open</button>
+        <button class="ftab" onclick="setFilter('critical', this)">Critical</button>
+        <button class="ftab" onclick="setFilter('overdue', this)">Overdue</button>
+        <button class="ftab" onclick="setFilter('closed', this)">Closed</button>
+    </nav>
+
+    <!-- Open cases -->
+    <section id="open-sec">
+        <div class="sec-head">
+            <span class="sec-title">Open Cases</span>
+            <div class="sec-rule"></div>
+            <span class="sec-ct" id="ct-open">0</span>
+        </div>
+        <div class="case-list" id="list-open"></div>
+    </section>
+
+    <!-- Closed cases -->
+    <section id="closed-sec">
+        <div class="sec-head">
+            <span class="sec-title">Closed Cases</span>
+            <div class="sec-rule"></div>
+            <span class="sec-ct" id="ct-closed">0</span>
+        </div>
+        <div class="case-list" id="list-closed"></div>
+    </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
